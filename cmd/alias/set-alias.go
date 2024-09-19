@@ -89,7 +89,7 @@ func setAliasCmd(c *cli.Context) error {
 	co := conn.Use(newAllias)
 	resp, err := co.Connect()
     if err != nil {
-        println(color.RedP("Error while connection: "), err)
+        println(color.RedP("Error while connection: "))
         return err
     }
     defer resp.Body.Close()

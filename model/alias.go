@@ -52,7 +52,7 @@ func (store *AliasStore) SaveAlias(Alias *Alias) error {
             return err
         }
 		println(color.ColorPrint("Grey",
-		"Alias has been saved" + suffixMessage,
+		"Alias has "+Alias.Name+" been saved" + suffixMessage,
 		&color.Options{
 			Italic: true,
 		}))
@@ -108,8 +108,25 @@ func (store *AliasStore) ListAliass() ([]Alias, error) {
 	return Aliass, err
 }
 
+func (store *AliasStore) DeleteAliasByName(Name string) error {
+	return store.db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte("Alias"))
+		return b.Delete([]byte(Name))
+	})
+}
+
+func (store *AliasStore) DeleteAllAlias() error {
+	return store.db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte("Alias"))
+		return b.ForEach(func(k, v []byte) error {
+			return b.Delete(k)
+		})
+	})
+}
+
 func (store *AliasStore) GetCurrentAlias() (Alias, error){
-	var alias []Alias
+	var currentAlias Alias
+	found := false
 	err := store.db.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket([]byte("Alias"))
 		return bucket.ForEach(func(key, value []byte) error {
@@ -118,18 +135,23 @@ func (store *AliasStore) GetCurrentAlias() (Alias, error){
 				return err
 			}
 			if Alias.Current {
-				alias  = append(alias, Alias)
+				currentAlias  = Alias
+				found = true
+                return nil
 
 			}
 			return nil
 		})
 	})
 	// On verife que l'Alias ne comporte qu'un seul element
-	if len(alias) > 1 {
-		return alias[0], errors.New("more than one Alias is marked as current")
+	if err != nil {
+        return Alias{}, err
+    }
+	if !found {
+		return Alias{}, errors.New(color.RedP("no Alias is marked as current"))
 	}
 
-	return alias[0], err
+	return currentAlias, err
 }
 
 func (store *AliasStore) UnsetCurrentAlias() error {
@@ -193,6 +215,14 @@ func (store *AliasStore) SetCurrentAlias(Name string) error {
 			return nil
 		})
 	})
+}
+
+func (store *AliasStore) IsAliasExist(Name string) bool {
+	suspectedAlias, err := store.ReadAlias(Name)
+	if(err != nil){
+		return false
+	}
+	return !store.IsEmptyAlias(suspectedAlias)
 }
 
 func (store *AliasStore) IsEmptyAlias(alias Alias) bool {

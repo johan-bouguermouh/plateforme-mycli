@@ -5,7 +5,7 @@
 Pour installer la CLI, exécutez simplement :
 
 ```
-$ go get github.com/urfave/cli
+go get github.com/urfave/cli
 ```
 
 Assurez-vous que vous `PATH`incluez le `$GOPATH/bin`répertoire afin que vos commandes puissent être facilement utilisées :
@@ -62,7 +62,7 @@ Il comprend les Flags suivant :
 
 - **`-port, -p`** **(obligatoire)**: Définit le port de votre server S3- \*-hostname,
 - _`-hostname, -H`_ **(obligatoire)**: Définit l'hôte auquel nous devons nous connecter
-- _`-keyname, -k_ `**(obligatoire)**: Définit le AWSAccessKeyId
+- _`-keyname, -k_`**(obligatoire)**: Définit le AWSAccessKeyId
 - `_-Secret, -s`\_ **(obligatoire)**: Votre clef secret qui sera ensuite signée en HMAC-SHA
 - `_-current, -c_` **(Optionnel)**: Permet de signifier directement au programme que cette alias doit être pris par défault
 
@@ -145,3 +145,58 @@ bucketool alias current -switch "minio"
 # Current Alias has been unset : this use cursor
 # Switch Alias to minio
 ```
+
+#### Commande `alias delete`
+
+La commande `alias delete` permet de supprimer un alias de la liste des alias. Vous pouvez spécifier le nom de l'alias à supprimer ou utiliser des options pour supprimer tous les alias ou ceux qui ne peuvent pas se connecter au serveur.
+
+##### Usage
+
+```sh
+bucketool alias delete <name>
+```
+
+##### Exemple de l'usage de Alias delete
+
+```sh
+bucketool alias delete myalias
+```
+
+##### Options
+
+- -a, --all : Supprime tous les alias.
+- -sc, --savecurrent : Sauvegarde l'alias actuel lorsque vous utilisez l'option -a ou --all.
+- -c, --clean : Supprime tous les alias qui ne peuvent pas se connecter au serveur.
+
+##### Exemple d'utilisation avec options
+
+###### Supprimer tous les alias
+
+```sh
+bucketool alias delete --all
+```
+
+###### Supprimer tous les alias mais sauvegarder l'alias actuel
+
+```sh
+bucketool alias delete --all --sc
+```
+
+###### Supprimer tous les alias qui ne peuvent pas se connecter au serveur
+
+```sh
+bucketool alias delete --clean
+```
+
+##### Confirmation de suppression
+
+Si l'alias actuel est sur le point d'être supprimé, une confirmation sera demandée à l'utilisateur :
+
+```
+The current Alias same as touched by this command will be deleted, do you want to delete ? (y/n) :
+```
+
+L'utilisateur doit répondre par y pour confirmer la suppression ou par n pour conserver l'alias.
+
+Si l'alias actuel est supprimé, un message d'avertissement sera affiché :
+`WARN | The current Alias has been deleted`

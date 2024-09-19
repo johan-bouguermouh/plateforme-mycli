@@ -56,11 +56,11 @@ var ListAliasCMD = cli.Command{
         Description: listAliasDesc,
         Flags: ListFlags,
         OnUsageError: utils.OnUsageError,
-        Action: listAlias,
+        Action: ListAliasCmd,
         CustomHelpTemplate: utils.HelpTemplate,
 }
 
-func listAlias(c *cli.Context) error {
+func ListAliasCmd(c *cli.Context) error {
     aliass, err := Store.ListAliass()
     if err != nil {
         println("Erreur lors de la lecture des tâches:", err)

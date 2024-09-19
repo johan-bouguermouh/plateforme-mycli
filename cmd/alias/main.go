@@ -14,6 +14,7 @@ var subCommands = []cli.Command{
 	SetAliasCMD,
 	ListAliasCMD,
 	CurrentAliasCMD,
+	DeleteAliasCMD,
 }
 
 var Store *model.AliasStore
