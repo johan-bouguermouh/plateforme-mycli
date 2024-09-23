@@ -33,7 +33,6 @@ type Connexion struct {
 
 // NewConnexion creates a new Connexion struct
 func Use(Alias model.Alias) *Connexion {
-	println("Init connexion")
 	url := CreateURL(Alias)
 	c := &Connexion{
 		URL : url,

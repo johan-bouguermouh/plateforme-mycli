@@ -227,3 +227,29 @@ La commande `create bucket` permet de créer un nouveau bucket sur un serveur co
 bucketool bucket create mybucket
 bucketool bucket -alias myalias create mybucket
 ```
+
+#### Commande `bucket list`
+
+La commande `bucket ls` permet de lister tous les buckets sur un serveur compatible S3 (comme MinIO). Cette commande peut également afficher des informations détaillées sur chaque bucket si l'option `--details` est spécifiée.
+
+##### Arguments de la commande bucket list
+
+Aucun argument n'est requis pour cette commande.
+
+##### Options de la commande bucket list
+
+- `-d`, `--details` : Affiche des informations détaillées sur chaque bucket, y compris la région, les ACL (Access Control List), la journalisation et la version.
+
+##### Exemple de la commande bucket liste
+
+Pour lister tous les buckets :
+
+```shell
+bucketool bucket ls
+```
+
+ou
+
+```shell
+bucketool bucket ls -d
+```

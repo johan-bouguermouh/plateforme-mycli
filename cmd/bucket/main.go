@@ -23,6 +23,7 @@ var aliasFlags = []cli.Flag{
 
 var subCommands = []cli.Command{
 	CreateBucketCMD,
+	ListBucketCMD,
 }
 
 var Store *model.AliasStore

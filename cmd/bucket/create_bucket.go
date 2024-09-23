@@ -34,12 +34,12 @@ var CreateBucketFlags = []cli.Flag{}
 // CreateBucketCmd create the command to create a bucket
 var CreateBucketCMD = cli.Command{
 		Name:    "create",
+		Aliases: []string{"c"},
 		Category: "Bucket",
 		Usage:   "create a bucket",
 		Description: createBucketDesc,
 		UsageText: createBucketUsageText,
 		Flags:   CreateBucketFlags,
-		Aliases: []string{"c"},
 		Before: BeforeUseAlias,
 		Action:  createBucketCmd,
 		OnUsageError: utils.OnUsageError,
