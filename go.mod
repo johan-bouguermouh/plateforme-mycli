@@ -3,7 +3,9 @@ module bucketool
 go 1.23.0
 
 require (
+	github.com/aws/aws-sdk-go v1.55.5 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/urfave/cli v1.22.15 // indirect
 	go.etcd.io/bbolt v1.3.11 // indirect

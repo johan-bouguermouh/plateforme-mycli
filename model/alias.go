@@ -228,3 +228,4 @@ func (store *AliasStore) IsAliasExist(Name string) bool {
 func (store *AliasStore) IsEmptyAlias(alias Alias) bool {
     return alias == Alias{}
 }
+	

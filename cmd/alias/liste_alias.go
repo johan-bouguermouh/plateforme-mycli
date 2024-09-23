@@ -1,4 +1,4 @@
-package cmd
+package alias
 
 import (
 	co "bucketool/connexion"
