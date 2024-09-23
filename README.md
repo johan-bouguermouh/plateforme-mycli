@@ -253,3 +253,29 @@ ou
 ```shell
 bucketool bucket ls -d
 ```
+
+#### Commande `bucket delete`
+
+La commande `bucket delete` permet de supprimer un bucket sur un serveur compatible S3 (comme MinIO). Cette commande vérifie d'abord si le bucket existe, puis tente de le supprimer. Si le bucket n'existe pas, un message d'erreur approprié est affiché.
+
+##### Arguments de la commande bucket delete
+
+<name> : Le nom du bucket à supprimer. Cet argument est obligatoire et doit correspondre à un bucket existant.
+
+##### Options de la commande bucket delete
+
+`-alias` : Nom de l'alias à utiliser. Si vous avez spécifié l'alias actuel, vous pouvez omettre cette option. L'utilisation de cette option est facultative. Si vous l'utilisez, cette option doit être placée après "bucket" et avant "delete <name>", comme ceci : bucket -alias <alias> delete <name>.
+
+##### Exemples de la commande bucket delete
+
+Pour supprimer un bucket nommé `mybucket` :
+
+```shell
+bucketool bucket delete mybucket
+```
+
+ou
+
+```shell
+bucketool bucket d "mybucket"
+```
