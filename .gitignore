@@ -1,0 +1,14 @@
+# Repository Containing the Volume Data
+data/*
+
+# env
+.env
+
+# Meta
+*.DS_Store
+*.log
+*.log.*
+xl.meta
+
+#Store
+data.db
