@@ -44,6 +44,22 @@ Cette version du CLI comprend une authentification automatique en `HMAC-SHA256`.
 
 Nous prendrons comme exemple cette image docker pour rentré dans le détaille d'utilisation du CLI
 
+### Flags Généraux
+
+Vous pouvez exploiter l'application de différentes manière. L'une des première approche est de définir un alias qui sera exploité par défaut lors de vos différente commande. Afin de comprendre correctement son usage nous commencerons par cela. Toutes les commandes suivantes seront déterminés par la bonne insertion de vos alias. Assurez-vous que ces derniers soient correct est adaptés à l'usage d'un bucket S3.
+
+Si vous souhaitez cependant altrernée l'usage du CLI sur plusieur bucket vous pouvez spécifier l'alias cible avec l'usage du flags `-alias`.
+
+```shell
+bucketool -alias <command> ...
+```
+
+Vous pouvez notamment passer le programme en mod debug avec l'alias `-debug`. Ainsi, vous aurez plus d'information sur les commands appeler et le fonctionnement interne de l'application. Lors de l'usage du flag `-debug`, une fonction d'interception de requêtes HTPP vous permetra d'avoir un vision plus détaillées sur ce qu'il ce passe.
+
+```shell
+bucketool -debug <command> ...
+```
+
 ### Usage des Alias
 
 La command alias comprend à ce stade trois commandes :
@@ -192,7 +208,7 @@ bucketool alias delete --clean
 
 Si l'alias actuel est sur le point d'être supprimé, une confirmation sera demandée à l'utilisateur :
 
-```
+```text
 The current Alias same as touched by this command will be deleted, do you want to delete ? (y/n) :
 ```
 
@@ -219,13 +235,13 @@ La commande `create bucket` permet de créer un nouveau bucket sur un serveur co
 
 ##### Options de la command Bucket Create
 
--alias : Nom de l'alias à utiliser. Si vous avez spécifié l'alias actuel, vous pouvez omettre cette option. L'utilisation de cette option est facultative. Si vous l'utilisez, cette option doit être placée après "bucket" et avant "create `<name>`", comme ceci : `bucket -alias <alias> create <name>`.
+-alias : Nom de l'alias à utiliser. Si vous avez spécifié l'alias actuel, vous pouvez omettre cette option. L'utilisation de cette option est facultative. Si vous l'utilisez, cette option doit être placée après "bucket" et avant "create `<name>`", comme ceci : `-alias <alias> bucket create <name>`.
 
 ##### Exemple de la command Bucket Create
 
 ```shell
 bucketool bucket create mybucket
-bucketool bucket -alias myalias create mybucket
+bucketool -alias "myalias" bucket create "mybucket"
 ```
 
 #### Commande `bucket list`
@@ -264,7 +280,7 @@ La commande `bucket delete` permet de supprimer un bucket sur un serveur compati
 
 ##### Options de la commande bucket delete
 
-`-alias` : Nom de l'alias à utiliser. Si vous avez spécifié l'alias actuel, vous pouvez omettre cette option. L'utilisation de cette option est facultative. Si vous l'utilisez, cette option doit être placée après "bucket" et avant "delete <name>", comme ceci : bucket -alias <alias> delete <name>.
+`-alias` : Nom de l'alias à utiliser. Si vous avez spécifié l'alias actuel, vous pouvez omettre cette option. L'utilisation de cette option est facultative. Si vous l'utilisez, cette option doit être placée après "bucket" et avant "delete <name>", comme ceci : `-alias <alias>  bucket delete <name>`.
 
 ##### Exemples de la commande bucket delete
 
