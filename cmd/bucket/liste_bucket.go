@@ -1,12 +1,14 @@
 package bucket
 
 import (
+	global "bucketool/cmd/global"
 	utils "bucketool/utils"
 	color "bucketool/utils/colorPrint"
+	"context"
 	"fmt"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 
 	"github.com/urfave/cli"
 )
@@ -46,7 +48,6 @@ var ListBucketCMD = cli.Command{
 		Description: listBucketDesc,
 		UsageText: listBucketUsageText,
 		Flags:   ListBucketFlags,
-		Before: BeforeUseAlias,
 		Action:  listBucketCmd,
 		OnUsageError: utils.OnUsageError,
 		CustomHelpTemplate : utils.HelpTemplate,
@@ -55,7 +56,7 @@ var ListBucketCMD = cli.Command{
 func listBucketCmd(c *cli.Context) error {
 	showDetails := c.Bool("details")
 
-	result, err := Connexion.S3Service.ListBuckets(&s3.ListBucketsInput{})
+	result, err := global.Connexion.S3Client.ListBuckets(context.TODO(),&s3.ListBucketsInput{})
 	if err != nil {
 		return err
 	}
@@ -71,23 +72,24 @@ func listBucketCmd(c *cli.Context) error {
 }
 
 func printBucketDetails(bucketName string) {
+    indentation := "  "
+
     // Get bucket location
-	indentation := "  "
-    location, err := Connexion.S3Service.GetBucketLocation(&s3.GetBucketLocationInput{
+    location, err := global.Connexion.S3Client.GetBucketLocation(context.TODO(), &s3.GetBucketLocationInput{
         Bucket: aws.String(bucketName),
     })
     if err != nil {
         fmt.Println(color.RedP("Failed to get bucket location:"), err)
         return
     }
-	locationStr := aws.StringValue(location.LocationConstraint)
-	if locationStr == "" {
-		locationStr = "us-east-1"
-	}
-    fmt.Println(indentation,color.GreenP("Location:"), color.GreyP(locationStr))
+    locationStr := string(location.LocationConstraint)
+    if locationStr == "" {
+        locationStr = "us-east-1"
+    }
+    fmt.Println(indentation, color.GreenP("Location:"), color.GreyP(locationStr))
 
     // Get bucket ACL
-    acl, err := Connexion.S3Service.GetBucketAcl(&s3.GetBucketAclInput{
+    acl, err := global.Connexion.S3Client.GetBucketAcl(context.TODO(), &s3.GetBucketAclInput{
         Bucket: aws.String(bucketName),
     })
     if err != nil {
@@ -96,11 +98,15 @@ func printBucketDetails(bucketName string) {
     }
     fmt.Println(indentation, color.GreenP("ACL:"))
     for _, grant := range acl.Grants {
-        fmt.Printf("    Grantee: %s\n    Permission: %s\n", color.GreyP(aws.StringValue(grant.Grantee.DisplayName)), color.GreyP(aws.StringValue(grant.Permission)))
+        grantee := "Unknown"
+        if grant.Grantee != nil && grant.Grantee.DisplayName != nil {
+            grantee = *grant.Grantee.DisplayName
+        }
+        fmt.Printf("    Grantee: %s\n    Permission: %s\n", color.GreyP(grantee), color.GreyP(string(grant.Permission)))
     }
 
     // Get bucket logging
-    logging, err := Connexion.S3Service.GetBucketLogging(&s3.GetBucketLoggingInput{
+    logging, err := global.Connexion.S3Client.GetBucketLogging(context.TODO(), &s3.GetBucketLoggingInput{
         Bucket: aws.String(bucketName),
     })
     if err != nil {
@@ -108,14 +114,14 @@ func printBucketDetails(bucketName string) {
         return
     }
     if logging.LoggingEnabled != nil {
-        fmt.Println(indentation,color.GreenP("Logging: Enabled"))
-        fmt.Printf("    TargetBucket: %s\n    TargetPrefix: %s\n", aws.StringValue(logging.LoggingEnabled.TargetBucket), aws.StringValue(logging.LoggingEnabled.TargetPrefix))
+        fmt.Println(indentation, color.GreenP("Logging: Enabled"))
+        fmt.Printf("    TargetBucket: %s\n    TargetPrefix: %s\n", aws.ToString(logging.LoggingEnabled.TargetBucket), aws.ToString(logging.LoggingEnabled.TargetPrefix))
     } else {
-        fmt.Println(indentation,color.GreenP("Logging:"), color.GreyP("Disabled"))
+        fmt.Println(indentation, color.GreenP("Logging:"), color.GreyP("Disabled"))
     }
 
     // Get bucket versioning
-    versioning, err := Connexion.S3Service.GetBucketVersioning(&s3.GetBucketVersioningInput{
+    versioning, err := global.Connexion.S3Client.GetBucketVersioning(context.TODO(), &s3.GetBucketVersioningInput{
         Bucket: aws.String(bucketName),
     })
     if err != nil {
@@ -123,9 +129,9 @@ func printBucketDetails(bucketName string) {
         return
     }
 
-	strVersionningStatus := aws.StringValue(versioning.Status)
-	if strVersionningStatus == "" {
-		strVersionningStatus = "Disabled"
-	}
-    fmt.Println(indentation, color.GreenP("Versioning:"), color.GreyP(strVersionningStatus))
+    strVersioningStatus := string(versioning.Status)
+    if strVersioningStatus == "" {
+        strVersioningStatus = "Disabled"
+    }
+    fmt.Println(indentation, color.GreenP("Versioning:"), color.GreyP(strVersioningStatus))
 }

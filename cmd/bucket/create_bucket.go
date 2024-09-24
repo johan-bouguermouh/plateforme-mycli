@@ -1,14 +1,20 @@
 package bucket
 
 import (
+	global "bucketool/cmd/global"
+	conn "bucketool/connexion"
 	utils "bucketool/utils"
 	color "bucketool/utils/colorPrint"
+	"context"
 	"errors"
+	"log"
 	"regexp"
 	"strings"
+	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 
 	"github.com/urfave/cli"
 )
@@ -40,7 +46,6 @@ var CreateBucketCMD = cli.Command{
 		Description: createBucketDesc,
 		UsageText: createBucketUsageText,
 		Flags:   CreateBucketFlags,
-		Before: BeforeUseAlias,
 		Action:  createBucketCmd,
 		OnUsageError: utils.OnUsageError,
 		CustomHelpTemplate : utils.HelpTemplate,
@@ -49,13 +54,19 @@ var CreateBucketCMD = cli.Command{
 func createBucketCmd(c *cli.Context) error {
 	bucketName := c.Args().First()
 
+	println("argument : ",bucketName)
+
 	validationsProblems := valideNameBucket(bucketName)
 	if validationsProblems != "" {
 		return errors.New(color.RedP(validationsProblems))
 	}
+	   
 
-	_, err := Connexion.S3Service.CreateBucket(&s3.CreateBucketInput{
+	_, err := global.Connexion.S3Client.CreateBucket(context.TODO(), &s3.CreateBucketInput{
 		Bucket: aws.String(bucketName),
+		CreateBucketConfiguration: &types.CreateBucketConfiguration{
+			LocationConstraint: types.BucketLocationConstraint(conn.Region),
+		},
 	})
 	if err != nil {
 		println(color.RedP("Failed to create bucket"))
@@ -63,12 +74,12 @@ func createBucketCmd(c *cli.Context) error {
 		if strings.Contains(err.Error(), "409") {
 			println(color.RedP("Bucket "+ bucketName +" already exists"))
 		}
+		log.Printf("Couldn't create bucket %v in Region %v. Here's why: %v\n",
+		bucketName, conn.Region, err)
 		return err
 	}
 
-	err = Connexion.S3Service.WaitUntilBucketExists(&s3.HeadBucketInput{
-		Bucket: aws.String(bucketName),
-	})
+	err = waitForBucketExists(bucketName)
 	if err != nil {
 		println(color.RedP("Failed to wait for bucket creation :"))
 		return err
@@ -110,4 +121,24 @@ func valideNameBucket (name string) string {
 	}
 
 	return ""
+}
+
+func waitForBucketExists(bucketName string) error {
+    for {
+        _, err := global.Connexion.S3Client.HeadBucket(context.TODO(), &s3.HeadBucketInput{
+            Bucket: aws.String(bucketName),
+        })
+        if err == nil {
+            return nil
+        }
+
+        // Check if the error is not a 404 (bucket not found)
+        var notFound *types.NotFound
+        if !errors.As(err, &notFound) {
+            return err
+        }
+
+        // Wait for a short period before retrying
+        time.Sleep(5 * time.Second)
+    }
 }

@@ -1,13 +1,15 @@
 package bucket
 
 import (
+	global "bucketool/cmd/global"
 	utils "bucketool/utils"
 	color "bucketool/utils/colorPrint"
+	"context"
 	"errors"
 	"fmt"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/urfave/cli"
 )
 
@@ -38,7 +40,6 @@ var DeleteBucketCMD = cli.Command{
 	Description: deleteBucketDesc,
 	UsageText: deleteBucketUsageText,
 	Flags:   DeleteBucketFlags,
-	Before: BeforeUseAlias,
 	Action:  deleteBucketCmd,
 	OnUsageError: utils.OnUsageError,
 	CustomHelpTemplate : utils.HelpTemplate,
@@ -53,14 +54,14 @@ func deleteBucketCmd(c *cli.Context) error {
 	}
 
 	//On verifi qu'un bucket existe bien avec ce nom
-	_, err := Connexion.S3Service.HeadBucket(&s3.HeadBucketInput{
+	_, err := global.Connexion.S3Client.HeadBucket(context.TODO(), &s3.HeadBucketInput{
 		Bucket: aws.String(bucketName),
 	})
 	if err != nil {
 		return errors.New(color.RedP("Bucket " + bucketName + " not found"))
 	}
 
-	_, err = Connexion.S3Service.DeleteBucket(&s3.DeleteBucketInput{
+	_, err = global.Connexion.S3Client.DeleteBucket(context.TODO(),&s3.DeleteBucketInput{
 		Bucket: aws.String(bucketName),
 	})
 	if err != nil {

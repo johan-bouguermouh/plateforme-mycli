@@ -2,20 +2,21 @@ package connexion
 
 import (
 	model "bucketool/model"
+	"context"
+	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3"
-
-	color "bucketool/utils/colorPrint"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
 // var date string = time.Now().UTC().Format(http.TimeFormat)
- var region string = "us-west-1"
+ var Region string = "us-west-1"
 // var typeServer string = "s3"
 //var requestType string = "aws4_request"
 
@@ -28,7 +29,7 @@ type Connexion struct {
 	Alias model.Alias
 	Request *http.Request
 	Response *http.Response
-	S3Service *s3.S3
+	S3Client *s3.Client
 }
 
 // NewConnexion creates a new Connexion struct
@@ -40,7 +41,7 @@ func Use(Alias model.Alias) *Connexion {
 		Alias: Alias,
 	}
 	//c.setHMACSignature()
-	c.InitS3Service()
+	c.InitS3Service(context.Background())
 	return c
 }
 
@@ -70,23 +71,34 @@ func (c *Connexion) Connect() (*http.Response, error) {
 }
 
 
-func(c *Connexion) InitS3Service() {
-	sess, err := session.NewSession(&aws.Config{
-		Region: aws.String(region),
-		Endpoint: aws.String(c.URL),
-		Credentials: credentials.NewStaticCredentials(c.Alias.KeyName, c.Alias.SecretKey, ""),
-		S3ForcePathStyle: aws.Bool(true), // Utiliser le style de chemin pour MinIO
+func (c *Connexion) InitS3Service(ctx context.Context) {
+    // Assurez-vous que l'URL inclut le protocole
+    url := c.URL
+    if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://") {
+        url = "http://" + url // ou "https://" selon votre configuration
+    }
+
+    cfg, err := config.LoadDefaultConfig(ctx,
+        config.WithRegion("us-east-1"), // MinIO utilise généralement "us-east-1" comme région par défaut
+        config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
+            c.Alias.KeyName,
+            c.Alias.SecretKey,
+            "",
+        )),
+		config.WithHTTPClient(&http.Client{
+			Transport: newLoggingRoundTripper(nil),
+		}),
+    )
+    if err != nil {
+        log.Fatalf("unable to load SDK config, %v", err)
+    }
+
+    // Create S3 service client with BaseEndpoint
+    c.S3Client = s3.NewFromConfig(cfg, func(o *s3.Options) {
+        o.BaseEndpoint = aws.String(url)
+		o.UsePathStyle = true
     })
-
-	if err != nil {
-		println(color.RedP("Error creating session"), err)
-	}
-
-	// Create S3 service client
-	svc := s3.New(sess)
-	c.S3Service = svc
 }
-
 
 
 
@@ -94,10 +106,10 @@ func CreateURL(Alias model.Alias) string {
     // Vérifie si le dernier caractère de l'hôte est un "/"
     if Alias.HOST[len(Alias.HOST)-1] != '/' {
         // Insère le numéro de port avant le "/"
-        return Alias.HOST + ":" + strconv.Itoa(Alias.Port) + "/"
+        return Alias.HOST + ":" + strconv.Itoa(Alias.Port) 
     } else {
         sanityzeHost := Alias.HOST[:len(Alias.HOST)-1]
-        return sanityzeHost + ":" + strconv.Itoa(Alias.Port) + "/"
+        return sanityzeHost + ":" + strconv.Itoa(Alias.Port) 
     }
 }
 
