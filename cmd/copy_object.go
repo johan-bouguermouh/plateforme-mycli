@@ -77,7 +77,13 @@ func copyObjectCmd(c *cli.Context) error {
 	if err != nil {
 		return errors.New(color.RedP("Bucket " + destination + " not found"))
 	}
+
+	err = UploadFile(destination, fileName, path)
+	if err != nil {
+		return errors.New(color.RedP("Error while uploading file"))
+	}
 	
+	println(color.GreenP("File " + path + " copied to " + destination + " with the name " + fileName))
 	return nil
 }
 

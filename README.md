@@ -295,3 +295,60 @@ ou
 ```shell
 bucketool bucket d "mybucket"
 ```
+
+### Usage des commandes de Bucket Object
+
+#### Commande `list_objects`
+
+La commande list_objects permet de lister tous les objets dans un bucket S3. Elle offre également une option pour afficher des détails supplémentaires sur chaque objet.
+
+##### Options de `list_objects`
+
+- `-b`, `--bucket` _(Requis)_ : Nom du bucket de destination.
+- `-d`, `--details` _(Optionnel)_ : Afficher les détails des objets.
+- `-alias` _(Optionnel)_ : Spécifier un alias à utiliser. Si vous avez spécifié l'alias actuel, vous pouvez omettre cette option.
+
+##### Exemple d'usage de `list`, `ls`
+
+- Lister tous les objets dans un bucket :
+
+```shell
+bucketool ls -b mybucket
+
+```
+
+- Lister tous les objets dans un bucket avec des détails :
+
+```shell
+bucketool list -b mybucket -d
+```
+
+Utiliser un alias pour spécifier le bucket :
+
+```shell
+bucketool -alias "myalias" ls -b "mybucket"
+```
+
+#### Commande `copy`, `cp`
+
+La commande `copy` permet de copier un fichier depuis un chemin local et de l'insérer dans un bucket de destination sur un serveur compatible S3.
+
+#### Options de `copy`
+
+- `-d`, `--destination` _(Requis)_ : Nom du bucket de destination.
+- `-n`, `--name` _(Optionnel)_ : Nom du fichier dans le bucket. Si non spécifié, le nom du fichier sera le même que celui du fichier copié.
+- `-alias` _(Optionnel)_ : Spécifier un alias à utiliser. Si vous avez spécifié l'alias actuel, vous pouvez omettre cette option.
+
+#### Exemple d'usage de `copy`
+
+- Copier un fichier dans un bucket en concervant le nom d'origine
+
+```shell
+bucketool cp "/path/to/file" -d "mybucket"
+```
+
+- Copier un fichier dans un bucket avec un nom spécifique
+
+```shell
+copy "/path/to/file" -d "mybucket" -n "myfile.txt"
+```

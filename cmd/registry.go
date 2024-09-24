@@ -22,6 +22,7 @@ func RegisterCommands(db *bolt.DB) {
     CommandRegistry = []cli.Command{
         alias.AliasCmd(db),
 		bucket.BucketCmd(db),
-
+		CopyObjectCMD,
+		ListBucketObjectsCMD,
     }
 }
