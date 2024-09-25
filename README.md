@@ -350,5 +350,36 @@ bucketool cp "/path/to/file" -d "mybucket"
 - Copier un fichier dans un bucket avec un nom spécifique
 
 ```shell
-copy "/path/to/file" -d "mybucket" -n "myfile.txt"
+bucketool copy "/path/to/file" -d "mybucket" -n "myfile.txt"
+```
+
+#### Commande `download`, `dl`
+
+La commande `download` permet de télécharger un fichier depuis un bucket S3 et de l'insérer dans un chemin local. Elle détecte automatiquement le type MIME du fichier et ajoute l'extension appropriée au fichier téléchargé.
+
+#### Options de `download`
+
+- `-b`, `--bucket` _(Requis)_ : Nom du bucket où se trouve le fichier.
+- `-n`, `--name` _(Requis)_ : Nom du fichier dans le bucket.
+- -rename, --rn (_Optionnel)_ : Nom du fichier dans le chemin local. Vous n'avez pas besoin de spécifier l'extension, elle sera ajoutée automatiquement. Si vous ne la spécifiez pas, le nom du fichier sera le même que celui du fichier copié, mais il pourrait être modifié si le type MIME est différent.
+- `-alias` _(Optionnel)_ : Spécifier un alias à utiliser. Si vous avez spécifié l'alias actuel, vous pouvez omettre cette option.
+
+#### Exemple d'usage de `download`
+
+- Télécharger un fichier dans un bucket
+
+```shell
+bucketool download "/path/to/file" -b mybucket -n myfile.txt
+```
+
+- Télécharger un fichier dans un bucket avec un nouveau nom
+
+```shell
+ bucketool /path/to/file -b mybucket -n myfile.txt -rename newfile
+```
+
+Utiliser un alias pour spécifier le bucket :
+
+```shell
+ bucketool download -alias myalias /path/to/file -b mybucket -n myfile.txt -rename newfile
 ```

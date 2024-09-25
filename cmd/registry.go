@@ -24,5 +24,6 @@ func RegisterCommands(db *bolt.DB) {
 		bucket.BucketCmd(db),
 		CopyObjectCMD,
 		ListBucketObjectsCMD,
+		DownloadObjectCMD,
     }
 }
