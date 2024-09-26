@@ -148,7 +148,7 @@ func (store *AliasStore) GetCurrentAlias() (Alias, error){
         return Alias{}, err
     }
 	if !found {
-		return Alias{}, errors.New(color.RedP("no Alias is marked as current"))
+		return Alias{}, errors.New(color.RedP("404 | no Alias is marked as current"))
 	}
 
 	return currentAlias, err
