@@ -25,5 +25,6 @@ func RegisterCommands(db *bolt.DB) {
 		CopyObjectCMD,
 		ListBucketObjectsCMD,
 		DownloadObjectCMD,
+		DeleteObjectCMD,
     }
 }

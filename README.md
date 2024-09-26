@@ -333,13 +333,13 @@ bucketool -alias "myalias" ls -b "mybucket"
 
 La commande `copy` permet de copier un fichier depuis un chemin local et de l'insérer dans un bucket de destination sur un serveur compatible S3.
 
-#### Options de `copy`
+##### Options de `copy`
 
 - `-d`, `--destination` _(Requis)_ : Nom du bucket de destination.
 - `-n`, `--name` _(Optionnel)_ : Nom du fichier dans le bucket. Si non spécifié, le nom du fichier sera le même que celui du fichier copié.
 - `-alias` _(Optionnel)_ : Spécifier un alias à utiliser. Si vous avez spécifié l'alias actuel, vous pouvez omettre cette option.
 
-#### Exemple d'usage de `copy`
+##### Exemple d'usage de `copy`
 
 - Copier un fichier dans un bucket en concervant le nom d'origine
 
@@ -361,7 +361,7 @@ La commande `download` permet de télécharger un fichier depuis un bucket S3 et
 
 - `-b`, `--bucket` _(Requis)_ : Nom du bucket où se trouve le fichier.
 - `-n`, `--name` _(Requis)_ : Nom du fichier dans le bucket.
-- -rename, --rn (_Optionnel)_ : Nom du fichier dans le chemin local. Vous n'avez pas besoin de spécifier l'extension, elle sera ajoutée automatiquement. Si vous ne la spécifiez pas, le nom du fichier sera le même que celui du fichier copié, mais il pourrait être modifié si le type MIME est différent.
+- `-rename`, `-rn` (_Optionnel)_ : Nom du fichier dans le chemin local. Vous n'avez pas besoin de spécifier l'extension, elle sera ajoutée automatiquement. Si vous ne la spécifiez pas, le nom du fichier sera le même que celui du fichier copié, mais il pourrait être modifié si le type MIME est différent.
 - `-alias` _(Optionnel)_ : Spécifier un alias à utiliser. Si vous avez spécifié l'alias actuel, vous pouvez omettre cette option.
 
 #### Exemple d'usage de `download`
@@ -382,4 +382,28 @@ Utiliser un alias pour spécifier le bucket :
 
 ```shell
  bucketool download -alias myalias /path/to/file -b mybucket -n myfile.txt -rename newfile
+```
+
+#### Commande `del`
+
+La commande `delete` permet de supprimer un objet existant d'un bucket existant. Cette commande nécessite le nom du bucket à supprimer comme argument ainsi que le nom d'lobjet cible. Vous pouvez également utiliser l'option -alias pour spécifier un alias avant la commande `delete`.
+
+#### Options de `del`
+
+- `-bucket`, `-b` _(required)_ : Le nom du bucket de destination. Ce flag est obligatoire.
+- `-name`, `-n` _(required)_ : Le nom du fichier dans le bucket. Ce flag est obligatoire.
+- `-alias` _(Optionnel)_ : Spécifier un alias à utiliser. Si vous avez spécifié l'alias actuel, vous pouvez omettre cette option.
+
+#### Exemple d'usage de `del`
+
+- Avec alias selectionné
+
+```shell
+bucketool del --bucket "mybucket" --name "myfile.txt"
+```
+
+- En ajoutant un alias manuellement
+
+```shell
+bucketool -alias "myAlias" del -b "mybucket" -n "myfile.txt"
 ```
