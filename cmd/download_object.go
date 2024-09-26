@@ -61,7 +61,7 @@ var DownloadObjectFlags = []cli.Flag{
 var DownloadObjectCMD = cli.Command{
 		Name:    "download, dl",
 		Category: "Object",
-		Aliases: []string{"dl"},
+		Aliases: []string{"dl", "download"},
 		Usage:   "Download a file from a bucket and insert it in a path",
 		UsageText: downloadObjectUsageText,
 		Description: downloadObjectDesc,
