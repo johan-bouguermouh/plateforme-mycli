@@ -22,8 +22,8 @@ var registryUsageText string = `This command copy a file from a path and insert 
 	The flag -d is the destination bucket.
 	The flag -n is the name of the file in the bucket.
 	The flag -alias can be used to specify the alias to use, if you have specified the current alias, you can omit this flag.
-	Usage of flag -alias is optional. If you use it, this flags must be placed after "copy" and before " <path>", like this : copy -alias <alias> <path> \n`+
-	"Example : copy /path/to/file -d mybucket -n myfile.txt" + "\n" + "Example : copy -alias myalias /path/to/file -d mybucket -n myfile.txt" + "\n"
+	Usage of flag -alias is optional. If you use it, this flags must be placed before command, like this : -alias <alias> copy <path> \n`+
+	"Example : copy /path/to/file -d mybucket -n myfile.txt" + "\n" + "Example : -alias myalias copy /path/to/file -d mybucket -n myfile.txt" + "\n"
 
 // Description of the flags
 var createBucketDesc string = color.ColorPrint("Black",
