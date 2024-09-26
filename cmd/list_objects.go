@@ -20,8 +20,8 @@ var listBuucketObjectsUsageText string = `This command list all the objects in a
 	The flag -b, -bucket is the destination bucket.
 	The flag -d, -details is optional, it shows details of the objects.
 	The flag -alias can be used to specify the alias to use, if you have specified the current alias, you can omit this flag.
-	Usage of flag -alias is optional. If you use it, this flags must be placed before name of command, like this : -alias <alias> list_objects \n`+
-	"Example : list_objects -b mybucket" + "\n" + "Example : -alias myalias list_objects -b mybucket" + "\n"
+	Usage of flag -alias is optional. If you use it, this flags must be placed before name of command, like this : -alias <alias> list \n`+
+	"Example : list_objects -b mybucket" + "\n" + "Example : -alias myalias list -b mybucket" + "\n"
 
 // Description of the flags
 var listBucketObjectsDesc string = color.ColorPrint("Black",
@@ -48,7 +48,7 @@ var ListBucketObjectsFlags = []cli.Flag{
 var ListBucketObjectsCMD = cli.Command{
 	Name:    "list, ls",
 	Category: "Object",
-	Aliases: []string{"ls"},
+	Aliases: []string{"ls", "list"},
 	Usage:   "List all the objects in a bucket",
 	UsageText: listBuucketObjectsUsageText,
 	Description: listBucketObjectsDesc,
