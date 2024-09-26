@@ -6,6 +6,7 @@ import (
 	color "bucketool/utils/colorPrint"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/urfave/cli"
 )
@@ -18,6 +19,9 @@ func useAliasDefaultName() string{
 	
 	currentAlias, err := Store.GetCurrentAlias()
 	if err != nil {
+		if strings.Contains(err.Error(), "404 |") {
+			return "default"
+		}
 		 fmt.Println(color.RedP("Can't get current alias"), err)
         return "default"
 	}
@@ -28,6 +32,10 @@ func useAliasDefaultName() string{
 }
 
 func BeforeUseAlias(c *cli.Context) error {
+	if c.Args()[0] == "alias" {
+		return nil
+	}
+
 	aliasName := c.String("alias")
 	if aliasName == "" {
 		aliasName = useAliasDefaultName()
