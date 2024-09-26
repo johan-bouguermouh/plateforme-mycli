@@ -24,9 +24,9 @@ var createBucketUsageText string = color.GreyP("Command Exemple : bucketool buck
 	`This command will create a new bucket.
 	The first argument is the name of the bucket.
 	This argument is required, and must be unique. Argument must be lowercase, and contain only lowercase letters, numbers, hyphens (-), and periods (.).
-	th flag -alias can be used to specify the alias to use, if you have specified the current alias, you can omit this flag.
-	Usage of flag -alias is optional. If you use it, this flags must be placed after "bucket" and before " create <name>", like this : bucket -alias <alias> create <name> \n`+
-	color.GreyP("Example : bucket create mybucket") + "\n" + color.GreyP("Example : bucket -alias myalias create mybucket") + "\n"
+	The flag -alias can be used to specify the alias to use, if you have specified the current alias, you can omit this flag.
+	Usage of flag -alias is optional. If you use it, this flags must be placed before "bucket", like this : -alias <alias> bucket create <name> \n`+
+	color.GreyP("Example : bucket create mybucket") + "\n" + color.GreyP("Example : bucketool -alias myalias bucket create mybucket") + "\n"
 // Description of the flags
 var createBucketDesc string = color.ColorPrint("Black",
 	" Flags Descriptions ", &color.Options{
@@ -53,8 +53,6 @@ var CreateBucketCMD = cli.Command{
 
 func createBucketCmd(c *cli.Context) error {
 	bucketName := c.Args().First()
-
-	println("argument : ",bucketName)
 
 	validationsProblems := valideNameBucket(bucketName)
 	if validationsProblems != "" {
