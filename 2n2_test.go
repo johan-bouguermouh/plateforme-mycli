@@ -86,31 +86,19 @@ func TestCLI(t *testing.T) {
 			want: "Detected content type:  text/plain; charset=utf-8\n\x1b[32mFile filetest.txt downloaded from mybuckettest and copied to",
 			print: color.GreenP("🗸 Testing Download Object from Bucket"),
 		},
-
-        // {
-        //     name:    "Test copy command with original name",
-        //     command: "bucketool",
-        //     args:    []string{"cp", "/path/to/file", "-d", "mybucket"},
-        //     want:    "File copied successfully",
-        // },
-        // {
-        //     name:    "Test copy command with specific name",
-        //     command: "bucketool",
-        //     args:    []string{"copy", "/path/to/file", "-d", "mybucket", "-n", "myfile.txt"},
-        //     want:    "File copied successfully",
-        // },
-        // {
-        //     name:    "Test download command",
-        //     command: "bucketool",
-        //     args:    []string{"download", "/path/to/file", "-b", "mybucket", "-n", "myfile.txt"},
-        //     want:    "File downloaded successfully",
-        // },
-        // {
-        //     name:    "Test download command with rename",
-        //     command: "bucketool",
-        //     args:    []string{"download", "/path/to/file", "-b", "mybucket", "-n", "myfile.txt", "-rename", "newfile"},
-        //     want:    "File downloaded successfully",
-        // },
+		{
+			name : "Delete Object from Bucket",
+			command: "bucketool",
+			args: []string{"del", "-b", "mybuckettest", "-n", "filetest.txt"},
+			want: color.GreenP("The object " + "filetest.txt" + " has been deleted from the bucket " + "mybuckettest"),
+			print: color.GreenP("🗸 Testing Delete Object from Bucket"),
+		},
+		{
+			name: "Delete Bucket",
+			command: "bucketool",
+			args: []string{"bucket", "delete", "mybuckettest"},
+			want: color.GreenP("Bucket " + "mybuckettest" + " deleted"),
+		},
     }
 
     for _, tt := range tests {
