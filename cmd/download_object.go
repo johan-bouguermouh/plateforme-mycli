@@ -25,7 +25,7 @@ var downloadObjectUsageText string = `This command download a file from a bucket
 	The flag -n is the name of the file in the bucket.
 	The flag -rename is the name of the file in the path (optionel), you don't need to specify extention, it will be added automatically. If you don't specify it, the name of the file will be the same as the file copied, but the could be changed if the MIME type is different.
 	The flag -alias can be used to specify the alias to use, if you have specified the current alias, you can omit this flag.
-	Usage of flag -alias is optional. If you use it, this flags must be placed  before command, like this : -alias <alias> donwload <path> -b <bucketName> -n <ObjectName>\n`+
+	Usage of flag -alias is optional. If you use it, this flags must be placed before command, like this : -alias <alias> donwload <path> -b <bucketName> -n <ObjectName>\n`+
 	"Example : dl /path/to/file -d mybucket -n myfile.txt" + "\n" + "Example : -alias myalias dl /path/to/file -d mybucket -n myfile.txt" + "\n"
 
 // Description of the flags
@@ -147,7 +147,9 @@ func DownloadFile(bucketName string, objectKey string, fileName string, rename s
 func setContentType(body []byte, rename string) string {
     // Détecter le type MIME du contenu
     contentType := http.DetectContentType(body)
-    println("Detected content type: ", contentType)
+	if env.IsDebugMode {
+    	println(color.GreyP("Detected content type: "+ contentType))
+	}
 
     // Séparer le type MIME pour obtenir l'extension
     categorie, extention, canCutct := strings.Cut(contentType, "/")
