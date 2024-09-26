@@ -152,6 +152,9 @@ func setContentType(body []byte, rename string) string {
     // Séparer le type MIME pour obtenir l'extension
     categorie, extention, canCutct := strings.Cut(contentType, "/")
     if canCutct {
+		if(contentType == "text/plain; charset=utf-8"){
+			extention = "txt"
+		}
         if env.IsDebugMode {
             println(color.GreyP("Read categorie of MIME type : " + categorie))
             println(color.GreyP("Read extention of MIME type : " + extention))
