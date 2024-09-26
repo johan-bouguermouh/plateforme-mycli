@@ -102,6 +102,8 @@ La sous-commande `set` comprend les Flags suivant :
 
 ##### Exemple d'utilisation de Alias Set
 
+- exemple d'usage classique
+
 ```shell
 bucketool alias set "minio" -hostname "http://localhost/" -port 9001 -k "minioadmin" -s "minioadmin"
 
@@ -109,32 +111,42 @@ bucketool alias set "minio" -hostname "http://localhost/" -port 9001 -k "minioad
 ##Alias has been saved
 ```
 
-> Une erreur peut survenir lors de l'insertion de l'Alias car un première appel est fait à l'adresse souhaité. Cet appel vous permez d'agir en conséquence si votre alias est défectueux.
+- exemple d'usage en passant le curseur à l'alias créer
 
-Par exemple :
+```shell
+bucketool alias set "minio" -hostname "http://localhost/" -port 9001 -k "minioadmin" -s "minioadmin" -c
+
+#retour
+# Current Alias has been unset : <last alias followed>
+# Alias has minio been saved and set as current
+# Registered Alias on Name:  minio http://localhost:9000
+```
+
+> Une erreur peut survenir lors de l'insertion de l'Alias car un première appel est fait à l'adresse souhaité. Cet appel vous permez d'agir en conséquence si votre alias est défectueux. _Il s'agit d'un simple appel de liste de bucket avec aucun arguments de plus. Vous pouvez notamment passer en mode debug pour vous assurez que l'appel fonctionne._
 
 ```shell
 bucketool alias set "this use cursor" -hostname "http://other.butNotExist/" -port 3000  -k "minioadmin" -s "minioadmin" -c
 ```
 
 Vous recevrez bien une réponse de type : `Alias has been saved and set as current`
-Suivit d'un message d'erreur : `Error while connection:`
-Ainsi que du détail de l'erreur : Probablement `Get "http://other.butNotExist:3000/": dial tcp: lookup other.butNotExist: no such host`
+Suivit d'un message d'erreur : `Error while connecting to the alias`
 
 Il vous suffira pour cela de rappeller la commande `set` sur le même alias pour le mettre à jour.
 
 #### Alias List
 
-A présent nous pouvons listé les alias que nous avons créer et constaté que le dernier, bien que défectueux est présent.
+A présent nous pouvons listé les alias que nous avons créer et constater que le dernier, bien que défectueux est présent.
 
-La command `alias list` comprend très peut de flag ests ont tous optionnels :
+La command `alias list` comprend très peut de flags et sont tous optionnels :
 
 - `-detail, -d`_(Optionnel)_ : Permet d'avoir des informations sur l'adresse contactée. Cette dernière ne retourne pas la clef de l'utilisateur ou la clef secret
 - `-filter, -f` _(Optionnel)_ : Vous sera utile pour facilité votre recherche.Cette dernière filtreras la liste selon les caractère clef présent. Ce filtre s'applique sur l'alias ainsi que sur l'host.
 
-Afin de facilité la gestion est la lecture des alias, l'alias actuellemnt selectionné sera représenté avec un curseur devant :
+> Afin de facilité la gestion est la lecture des alias, l'alias actuellement selectionné sera représenté avec un curseur devant :
 
 ##### Exemple d'utilisation de Alias list
+
+- Exemple d'utilisation avec le filtre
 
 ```shell
     bucketool alias ls -d -filter "local"
@@ -144,7 +156,7 @@ Afin de facilité la gestion est la lecture des alias, l'alias actuellemnt selec
     #  - minio (http://localhost:9001/)
 ```
 
-ou
+- Exemple d'utilisation simple
 
 ```shell
 bucketool alias ls
@@ -154,14 +166,26 @@ bucketool alias ls
 #   ► this use cursor
 ```
 
-#### Alias Current
+- Exemple d'utilisation avec détail
+
+```shell
+bucketool alias ls -d
+
+# Retour
+#   - minio (http://localhost:9000)
+#   ► this use cursor (http://other.butNotExist:3000)
+```
+
+#### Commande `alias current`
 
 Alias current est une command qui vous permtra deux choses :
 
 - Sans Flag, cette dernière commande retourne l'alias utilisé actuellement
 - Avec le flag `-switch`,`-s` suivit du nom d'un autre alias. Ce dernier changera l'adresse du curseur en conséquence.
 
-##### Exemple de l'usage de Alias current
+##### Usage de la commande `alias current`
+
+- Usage pour voir l'alias utilisé
 
 ```shell
 bucketool alias current
@@ -170,7 +194,7 @@ bucketool alias current
 # Alias used :  this use cursor
 ```
 
-Commande avec le flag `-switch`
+- Usage pour changer d'alias a utilisé
 
 ```shell
 bucketool alias current -switch "minio"
@@ -184,39 +208,33 @@ bucketool alias current -switch "minio"
 
 La commande `alias delete` permet de supprimer un alias de la liste des alias. Vous pouvez spécifier le nom de l'alias à supprimer ou utiliser des options pour supprimer tous les alias ou ceux qui ne peuvent pas se connecter au serveur.
 
-##### Usage
-
-```sh
-bucketool alias delete <name>
-```
-
 ##### Exemple de l'usage de Alias delete
 
-```sh
-bucketool alias delete myalias
+```shell
+bucketool alias delete "myalias"
 ```
 
 ##### Options
 
-- -a, --all : Supprime tous les alias.
-- -sc, --savecurrent : Sauvegarde l'alias actuel lorsque vous utilisez l'option -a ou --all.
-- -c, --clean : Supprime tous les alias qui ne peuvent pas se connecter au serveur.
+- `-a`, `--all` _(Optionel)_ : Supprime tous les alias.
+- `-sc`, `--savecurrent` _(Optionel)_: Sauvegarde l'alias actuel lorsque vous utilisez l'option `--all` ou `--clean`.
+- `-c`, `--clean` _(Optionel)_: Supprime tous les alias qui ne peuvent pas se connecter au serveur.
 
 ##### Exemple d'utilisation avec options
 
-###### Supprimer tous les alias
+- Supprimer tous les alias
 
 ```sh
 bucketool alias delete --all
 ```
 
-###### Supprimer tous les alias mais sauvegarder l'alias actuel
+- Supprimer tous les alias mais sauvegarder l'alias actuel
 
 ```sh
 bucketool alias delete --all --sc
 ```
 
-###### Supprimer tous les alias qui ne peuvent pas se connecter au serveur
+- Supprimer tous les alias qui ne peuvent pas se connecter au serveur
 
 ```sh
 bucketool alias delete --clean
@@ -224,26 +242,29 @@ bucketool alias delete --clean
 
 ##### Confirmation de suppression
 
-Si l'alias actuel est sur le point d'être supprimé, une confirmation sera demandée à l'utilisateur :
+Si l'alias actuel est sur le point d'être supprimé, une confirmation sera demandée à l'utilisateur. Cela peut se produire si le programme remarque que le flag `-sc` n'est pas utiliser lors de l'usage de `--all` ou de `--clean`.
 
 ```text
 The current Alias same as touched by this command will be deleted, do you want to delete ? (y/n) :
 ```
 
-L'utilisateur doit répondre par y pour confirmer la suppression ou par n pour conserver l'alias.
+L'utilisateur doit répondre par y pour confirmer le risque de supression ou par n pour conserver automatiquement l'alias.
 
 Si l'alias actuel est supprimé, un message d'avertissement sera affiché :
-`WARN | The current Alias has been deleted`
+
+```shell
+WARN | The current Alias has been deleted
+```
 
 ### Usage des commandes Bucket
 
-#### Command Bucket Create
+#### Commande `bucket create`
 
-La commande `create bucket` permet de créer un nouveau bucket sur un serveur compatible S3 (comme MinIO). Cette commande vérifie d'abord si le nom du bucket est valide, puis tente de créer le bucket. Si le bucket existe déjà, un message d'erreur approprié est affiché.
+La commande `create bucket` permet de créer un nouveau bucket sur un serveur compatible S3. Cette commande vérifie d'abord si le nom du bucket est valide, puis tente de créer le bucket. Si le bucket existe déjà, un message d'erreur approprié est affiché.
 
-##### Arguments de la command Bucket Create
+##### Arguments de la command `bucket create`
 
-- `<name>` : Le nom du bucket à créer. Cet argument est obligatoire et doit être unique. Le nom doit être en minuscules et ne contenir que des lettres minuscules, des chiffres, des tirets (-) et des points (.).
+- `<name>` : Le nom du bucket à créer. Cet argument est obligatoire et doit être unique. Le nom doit être en minuscules et ne contenir que des lettres minuscules, des chiffres, des tirets (-) et des points (.). L'agument doit être placé en premier.
 
 1. Le nom ne doit pas être vide.
 2. Le nom doit comporter au moins 3 caractères.
@@ -251,24 +272,33 @@ La commande `create bucket` permet de créer un nouveau bucket sur un serveur co
 4. Le nom doit être en minuscules.
 5. Le nom ne doit contenir que des lettres minuscules, des chiffres, des tirets (-) et des points (.).
 
-##### Options de la command Bucket Create
+##### Options de la command `bucket create`
 
--alias : Nom de l'alias à utiliser. Si vous avez spécifié l'alias actuel, vous pouvez omettre cette option. L'utilisation de cette option est facultative. Si vous l'utilisez, cette option doit être placée après "bucket" et avant "create `<name>`", comme ceci : `-alias <alias> bucket create <name>`.
+- `-alias` _(Optionnel)_ : Nom de l'alias à utiliser. _Si vous avez spécifié l'alias actuel, vous pouvez omettre cette option_. L'utilisation de cette option est facultative. Si vous l'utilisez, cette option doit être placée avant le nom de la commande ciblée, comme ceci : `-alias <alias> bucket create <name>`.
 
-##### Exemple de la command Bucket Create
+##### Exemple de la command `bucket create`
+
+- Usage avec l'alias cible
 
 ```shell
 bucketool bucket create mybucket
+
+#Retour
+# Bucket mybucket created successfully
+```
+
+- Usage avec en définissant l'alias
+
+```shell
 bucketool -alias "myalias" bucket create "mybucket"
+
+#Retour
+# Bucket mybucket created successfully
 ```
 
 #### Commande `bucket list`
 
-La commande `bucket ls` permet de lister tous les buckets sur un serveur compatible S3 (comme MinIO). Cette commande peut également afficher des informations détaillées sur chaque bucket si l'option `--details` est spécifiée.
-
-##### Arguments de la commande bucket list
-
-Aucun argument n'est requis pour cette commande.
+La commande `bucket ls` permet de lister tous les buckets sur un serveur compatible S3. Cette commande peut également afficher des informations détaillées sur chaque bucket si l'option `--details` est spécifiée.
 
 ##### Options de la commande bucket list
 
@@ -276,55 +306,66 @@ Aucun argument n'est requis pour cette commande.
 
 ##### Exemple de la commande bucket liste
 
-Pour lister tous les buckets :
+- Pour lister tous les buckets
 
 ```shell
 bucketool bucket ls
+
+#Retour
+# mybucket
+# ...
 ```
 
-ou
+- Pour lister tous les buckets avec leurs détails
 
 ```shell
 bucketool bucket ls -d
+
+# Retour
+# mybucket
+#   Location: us-east-1
+#   ACL:
+#    Grantee: Unknown
+#    Permission: FULL_CONTROL
+#   Logging: Disabled
+#   Versioning: Disabled
+# ...
 ```
 
 #### Commande `bucket delete`
 
-La commande `bucket delete` permet de supprimer un bucket sur un serveur compatible S3 (comme MinIO). Cette commande vérifie d'abord si le bucket existe, puis tente de le supprimer. Si le bucket n'existe pas, un message d'erreur approprié est affiché.
+La commande `bucket delete` permet de supprimer un bucket sur un serveur compatible S3. Cette commande vérifie d'abord si le bucket existe, puis tente de le supprimer. Si le bucket n'existe pas, un message d'erreur approprié est affiché.
 
-##### Arguments de la commande bucket delete
+##### Arguments de la commande `bucket delete`
 
-<name> : Le nom du bucket à supprimer. Cet argument est obligatoire et doit correspondre à un bucket existant.
+- `<name>` : Le nom du bucket à supprimer. Cet argument est obligatoire et doit correspondre à un bucket existant.
 
-##### Options de la commande bucket delete
+##### Options de la commande `bucket delete`
 
-`-alias` : Nom de l'alias à utiliser. Si vous avez spécifié l'alias actuel, vous pouvez omettre cette option. L'utilisation de cette option est facultative. Si vous l'utilisez, cette option doit être placée après "bucket" et avant "delete <name>", comme ceci : `-alias <alias>  bucket delete <name>`.
+- `-alias` _(Optionnel)_ : Nom de l'alias à utiliser. _Si vous avez spécifié l'alias actuel, vous pouvez omettre cette option_. L'utilisation de cette option est facultative. Si vous l'utilisez, cette option doit être placée avant le nom de la commande ciblée, comme ceci : `-alias <alias> bucket delete <name>`.
 
-##### Exemples de la commande bucket delete
+##### Usage de la commande bucket delete
 
-Pour supprimer un bucket nommé `mybucket` :
+- Pour supprimer un bucket nommé `mybucket` :
 
 ```shell
 bucketool bucket delete mybucket
+
+# Retour
+# Bucket mybucket deleted
 ```
 
-ou
-
-```shell
-bucketool bucket d "mybucket"
-```
-
-### Usage des commandes de Bucket Object
+### Usage des commandes liées aux BucketObjects
 
 #### Commande `list_objects`
 
 La commande list_objects permet de lister tous les objets dans un bucket S3. Elle offre également une option pour afficher des détails supplémentaires sur chaque objet.
 
-##### Options de `list_objects`
+##### Options de `list`, `ls`
 
 - `-b`, `--bucket` _(Requis)_ : Nom du bucket de destination.
 - `-d`, `--details` _(Optionnel)_ : Afficher les détails des objets.
-- `-alias` _(Optionnel)_ : Spécifier un alias à utiliser. Si vous avez spécifié l'alias actuel, vous pouvez omettre cette option.
+- `-alias` _(Optionnel)_ : Nom de l'alias à utiliser. _Si vous avez spécifié l'alias actuel, vous pouvez omettre cette option_. L'utilisation de cette option est facultative. Si vous l'utilisez, cette option doit être placée avant le nom de la commande ciblée, comme ceci : `-alias <alias> ls -b "mybucket"`.
 
 ##### Exemple d'usage de `list`, `ls`
 
@@ -333,18 +374,36 @@ La commande list_objects permet de lister tous les objets dans un bucket S3. Ell
 ```shell
 bucketool ls -b mybucket
 
+# Return
+# Objects in bucket myBucket
+#  - test.png
+#  ...
+
 ```
 
 - Lister tous les objets dans un bucket avec des détails :
 
 ```shell
 bucketool list -b mybucket -d
+
+# Return
+# Objects in bucket johan
+#  - test.png
+#    Last Modified: 2024-09-26 13:40:31.801 +0000 UTC
+#    Size: 293227 bytes
+#    Storage Class: STANDARD
+#    ETag: "d7a30c352f8d5b5b5894251b57c4bb2e"
 ```
 
-Utiliser un alias pour spécifier le bucket :
+- Utiliser un alias pour spécifier le bucket :
 
 ```shell
 bucketool -alias "myalias" ls -b "mybucket"
+
+# Return
+# Objects in bucket myBucket
+#  - test.png
+#  ...
 ```
 
 #### Commande `copy`, `cp`
@@ -362,13 +421,19 @@ La commande `copy` permet de copier un fichier depuis un chemin local et de l'in
 - Copier un fichier dans un bucket en concervant le nom d'origine
 
 ```shell
-bucketool cp "/path/to/file" -d "mybucket"
+bucketool cp "C:\Users\username\Desktop\image.png" -d "mybucket"
+
+# Return
+# File C:\Users\username\Desktop\image.png copied to mybucket with the name image.png
 ```
 
 - Copier un fichier dans un bucket avec un nom spécifique
 
 ```shell
-bucketool copy "/path/to/file" -d "mybucket" -n "myfile.txt"
+bucketool cp "C:\Users\username\Desktop\image.png" -d "mybucket" -n "rename.png"
+
+# Return
+# File C:\Users\username\Desktop\image.png copied to mybucket with the name rename.png
 ```
 
 #### Commande `download`, `dl`
@@ -384,27 +449,36 @@ La commande `download` permet de télécharger un fichier depuis un bucket S3 et
 
 #### Exemple d'usage de `download`
 
-- Télécharger un fichier dans un bucket
+- Télécharger un fichier depuis un bucket
 
 ```shell
 bucketool download "/path/to/file" -b mybucket -n myfile.txt
+
+# Retour
+# File myfile.txt downloaded from mybucket and copied to /path/to/file
 ```
 
-- Télécharger un fichier dans un bucket avec un nouveau nom
+- Télécharger un fichier depuis un bucket avec un nouveau nom
 
 ```shell
  bucketool /path/to/file -b mybucket -n myfile.txt -rename newfile
+
+ # Retour
+ # File myfile.txt downloaded from mybucket and copied to /path/to/file
 ```
 
-Utiliser un alias pour spécifier le bucket :
+- Utiliser un alias pour spécifier le bucket :
 
 ```shell
  bucketool download -alias myalias /path/to/file -b mybucket -n myfile.txt -rename newfile
+
+ # Retour
+ # File myfile.txt downloaded from mybucket and copied to /path/to/file
 ```
 
-#### Commande `del`
+#### Commande `del`, `delete`
 
-La commande `delete` permet de supprimer un objet existant d'un bucket existant. Cette commande nécessite le nom du bucket à supprimer comme argument ainsi que le nom d'lobjet cible. Vous pouvez également utiliser l'option -alias pour spécifier un alias avant la commande `delete`.
+La commande `delete` permet de supprimer un objet existant d'un bucket existant. Cette commande nécessite le nom du bucket à supprimer comme argument ainsi que le nom de l'objet cible. Vous pouvez également utiliser l'option `-alias` pour spécifier un alias avant la commande `delete`.
 
 #### Options de `del`
 
@@ -418,10 +492,15 @@ La commande `delete` permet de supprimer un objet existant d'un bucket existant.
 
 ```shell
 bucketool del --bucket "mybucket" --name "myfile.txt"
+
+# Retour
+# The object myfile.txt has been deleted from the bucket mybucket
 ```
 
 - En ajoutant un alias manuellement
 
 ```shell
 bucketool -alias "myAlias" del -b "mybucket" -n "myfile.txt"
+# Retour
+# The object myfile.txt has been deleted from the bucket mybucket
 ```
