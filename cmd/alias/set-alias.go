@@ -87,12 +87,6 @@ func setAliasCmd(c *cli.Context) error {
 
 	Store.SaveAlias(&newAllias)
 	co := conn.Use(newAllias)
-	resp, err := co.Connect()
-    if err != nil {
-        println(color.RedP("Error while connection: "))
-        return err
-    }
-    defer resp.Body.Close()
 
     println("Registered Alias on Name: ",
 	color.GreenP(newAllias.Name),
