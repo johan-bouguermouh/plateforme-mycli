@@ -41,6 +41,9 @@ func BeforeUseAlias(c *cli.Context) error {
 		aliasName = useAliasDefaultName()
 	}
 	if !Store.IsAliasExist(aliasName){
+		if(aliasName == "default"){
+			println(color.YellowP("Warning : No Alias registred, please use the command 'bucketool alias set' or 'bucketool alias current -s <alias>' to add an Alias"))
+		}
 		return errors.New(color.RedP("error while using alias : alias not found"))
 	}
 	currentAlias, err := Store.ReadAlias(aliasName)
