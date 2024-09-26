@@ -50,7 +50,7 @@ var CopyObjectFlags = []cli.Flag{
 var CopyObjectCMD = cli.Command{
 		Name:    "copy, cp",
 		Category: "Object",
-		Aliases: []string{"cp"},
+		Aliases: []string{"cp", "copy"},
 		Usage:   "Copy a file from a path and insert it in a bucket destination",
 		UsageText: registryUsageText,
 		Description: createBucketDesc,
