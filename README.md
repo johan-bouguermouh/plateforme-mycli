@@ -2,10 +2,12 @@
 
 ## Initialisation du projet
 
-Pour installer la CLI, exécutez simplement :
+Pour installer la CLI, exécutez les commande suivante dans votre inviter de commande :
 
-```
-go get github.com/urfave/cli
+- un fois à la racine du projet
+
+```shell
+go mod tidy
 ```
 
 Assurez-vous que vous `PATH`incluez le `$GOPATH/bin`répertoire afin que vos commandes puissent être facilement utilisées :
@@ -15,15 +17,17 @@ Assurez-vous que vous `PATH`incluez le `$GOPATH/bin`répertoire afin que vos c
 1. Ouvrez l'invite de commandes ou PowerShell.
 2. Exécutez la commande suivante pour ajouter `$GOPATH/bin` à votre `PATH` pour la session en cours :
 
-```
+```shell
 export PATH=$PATH:$GOPATH/bin
 ```
 
 ### Plateformes prises en charge
 
+`Bucketool` utilise la force de `urfave/cli` pour assurer unecompatibilitée optimal.
+
 [Voir ici](https://github.com/minio/cli#supported-platforms)
 
-cli est testé sur plusieurs versions de Go sous Linux et sur la dernière version publiée de Go sous OS X et Windows. Pour plus de détails, voir [`./.travis.yml`](https://github.com/minio/cli/blob/master/.travis.yml)et [`./appveyor.yml`](https://github.com/minio/cli/blob/master/appveyor.yml).
+Le cli `urfave` est testé sur plusieurs versions de Go sous Linux et sur la dernière version publiée de Go sous OS X et Windows. Pour plus de détails, voir [`./.travis.yml`](https://github.com/minio/cli/blob/master/.travis.yml)et [`./appveyor.yml`](https://github.com/minio/cli/blob/master/appveyor.yml).
 
 ### Utilisation d'une Image minio pour les tests
 
@@ -40,33 +44,45 @@ Cela lancera automatiquement l'image docker en local sur le port `9001`. Pensez 
 
 ### Avant Propos
 
-Cette version du CLI comprend une authentification automatique en `HMAC-SHA256`. Par conséquent il n'est pour l'instant que compatible avec la version4 d'authentification des buckets Amazon. [Voir la documentation officielle](https://docs.aws.amazon.com/fr_fr/AmazonSimpleDB/latest/DeveloperGuide/HMACAuth.html)
+Cette version du CLI comprend une authentification automatique en `HMAC-SHA256`. Par conséquent il n'est pour l'instant que compatible avec la version4 d'authentification des buckets Amazon. [Voir la documentation officielle](https://docs.aws.amazon.com/fr_fr/AmazonSimpleDB/latest/DeveloperGuide/HMACAuth.html).
 
 Nous prendrons comme exemple cette image docker pour rentré dans le détaille d'utilisation du CLI
 
 ### Flags Généraux
+
+#### Usage générale des alias
 
 Vous pouvez exploiter l'application de différentes manière. L'une des première approche est de définir un alias qui sera exploité par défaut lors de vos différente commande. Afin de comprendre correctement son usage nous commencerons par cela. Toutes les commandes suivantes seront déterminés par la bonne insertion de vos alias. Assurez-vous que ces derniers soient correct est adaptés à l'usage d'un bucket S3.
 
 Si vous souhaitez cependant altrernée l'usage du CLI sur plusieur bucket vous pouvez spécifier l'alias cible avec l'usage du flags `-alias`.
 
 ```shell
-bucketool -alias <command> ...
+bucketool --alias <command> ...
 ```
 
-Vous pouvez notamment passer le programme en mod debug avec l'alias `-debug`. Ainsi, vous aurez plus d'information sur les commands appeler et le fonctionnement interne de l'application. Lors de l'usage du flag `-debug`, une fonction d'interception de requêtes HTPP vous permetra d'avoir un vision plus détaillées sur ce qu'il ce passe.
+#### Usage du mode Debug
+
+Vous pouvez notamment passer le programme en mod debug avec l'alias `-debug`. Ainsi, vous aurez plus d'information sur les commands appelée et le fonctionnement interne de l'application. Lors de l'usage du flag `-debug`, une fonction d'interception de requêtes HTPP vous permetra d'avoir un vision plus détaillées sur ce qu'il ce passe.
 
 ```shell
-bucketool -debug <command> ...
+bucketool --debug <command> ...
+```
+
+Tout les commandes et les sous commandes bénéficie du flag `--help` ce qui vous permetra d'avoir un accès détaillé de chaques commandes et de leurs usage.
+
+```shell
+bucketool <command> -help
 ```
 
 ### Usage des Alias
 
-La command alias comprend à ce stade trois commandes :
+La commande `alias` comprend à ce stade trois sous-commandes :
 
-- set
-- list
-- current
+- Set
+- List
+- Current
+
+C'est sous commandes vous permet efficacement de gérer et stocker des accès à différent serveur S3. Ainsi, il n'est pas necessaire de rentrée constamment les différent credential pour accédès au donnée. Tout le processus d'interactivité du CLI repose sur ces alias. Il est donc important de les déclarés avant tout usage.
 
 #### Alias Set
 
@@ -74,13 +90,15 @@ La command Alias set permet de créer un alias, cela facilitera par la suite la 
 
 Cette commande prend comme première argument le nom de votre alias
 
-Il comprend les Flags suivant :
+##### Options de la commmande `alias set`
 
-- **`-port, -p`** **(obligatoire)**: Définit le port de votre server S3- \*-hostname,
-- _`-hostname, -H`_ **(obligatoire)**: Définit l'hôte auquel nous devons nous connecter
-- _`-keyname, -k_`**(obligatoire)**: Définit le AWSAccessKeyId
-- `_-Secret, -s`\_ **(obligatoire)**: Votre clef secret qui sera ensuite signée en HMAC-SHA
-- `_-current, -c_` **(Optionnel)**: Permet de signifier directement au programme que cette alias doit être pris par défault
+La sous-commande `set` comprend les Flags suivant :
+
+- `-port, -p` _(obligatoire)_: Définit le port de votre server S3,
+- `-hostname, -H` _(obligatoire)_ : Définit l'hôte auquel nous devons nous connecter
+- `-keyname, -k` _(obligatoire)_ : Définit le AWSAccessKeyId
+- `_-Secret, -s` _(obligatoire)_ : Votre clef secret qui sera ensuite signée en HMAC-SHA
+- `_-current, -c` _(Optionnel)_ : Permet de signifier directement au programme que cette alias doit être pris par défault. _Si un autre alias été jusqu'à lors utilisé, il perdra le pointeur. Voir plus en détail `alais current`_
 
 ##### Exemple d'utilisation de Alias Set
 

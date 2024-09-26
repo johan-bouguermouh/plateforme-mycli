@@ -2,9 +2,11 @@ package alias
 
 import (
 	conn "bucketool/connexion"
+	env "bucketool/environment"
 	"bucketool/model"
 	utils "bucketool/utils"
 	color "bucketool/utils/colorPrint"
+	"context"
 
 	"github.com/urfave/cli"
 )
@@ -87,6 +89,16 @@ func setAliasCmd(c *cli.Context) error {
 
 	Store.SaveAlias(&newAllias)
 	co := conn.Use(newAllias)
+
+	//on fait un appel au ClientS3 pour s'assurer que l'alias est correct
+	_, err :=  co.S3Client.ListBuckets(context.TODO(),nil)
+	if err != nil {
+		println(color.RedP("Error while connecting to the alias"))
+		if env.IsDebugMode{
+			println(err.Error())
+		}
+	}
+
 
     println("Registered Alias on Name: ",
 	color.GreenP(newAllias.Name),

@@ -5,6 +5,7 @@ import (
 	utils "bucketool/utils"
 	color "bucketool/utils/colorPrint"
 	"bufio"
+	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -142,9 +143,8 @@ func cleanAlias() error {
 	}
 	for _, a := range alias {
 		co := conn.Use(a)
-		_, err := co.Connect()
+		_, err := co.S3Client.ListBuckets(context.TODO(), nil)
 		if err != nil {
-
 			err = Store.DeleteAliasByName(a.Name)
 			if err != nil {
 				return err
