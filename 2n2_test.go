@@ -55,7 +55,7 @@ func TestCLI(t *testing.T) {
 			name: "Create Bucket",
 			command: "bucketool",
 			args: []string{"bucket", "create", "mybuckettest"},
-			want: "mybuckettest\n\x1b[32mBucket mybuckettest created successfully\x1b[0m\n",
+			want: color.GreenP("Bucket "+ "mybuckettest" +" created successfully"),
 			print: color.GreenP("🗸 Testing Bucket Create"),
 		},
 		{
@@ -83,7 +83,7 @@ func TestCLI(t *testing.T) {
 			name: "Download Object from Bucket",
 			command: "bucketool",
 			args: []string{"dl", Path+"\\dataTest\\", "-b", "mybuckettest", "-n", "filetest.txt", "-rn", "filetestdownload.txt"},
-			want: "Detected content type:  text/plain; charset=utf-8\n\x1b[32mFile filetest.txt downloaded from mybuckettest and copied to",
+			want: color.GreenP("File " + "filetest.txt" + " downloaded from " + "mybuckettest"+ " and copied to " + Path+"\\dataTest\\"),
 			print: color.GreenP("🗸 Testing Download Object from Bucket"),
 		},
 		{
