@@ -2,8 +2,8 @@ package connexion
 
 import (
 	model "bucketool/model"
+	color "bucketool/utils/colorPrint"
 	"context"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -71,7 +71,7 @@ func (c *Connexion) Connect() (*http.Response, error) {
 }
 
 
-func (c *Connexion) InitS3Service(ctx context.Context) {
+func (c *Connexion) InitS3Service(ctx context.Context) error {
     // Assurez-vous que l'URL inclut le protocole
     url := c.URL
     if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://") {
@@ -90,7 +90,8 @@ func (c *Connexion) InitS3Service(ctx context.Context) {
 		}),
     )
     if err != nil {
-        log.Fatalf("unable to load SDK config, %v", err)
+        println(color.RedP("unable to load SDK config:"))
+		return err
     }
 
     // Create S3 service client with BaseEndpoint
@@ -98,6 +99,8 @@ func (c *Connexion) InitS3Service(ctx context.Context) {
         o.BaseEndpoint = aws.String(url)
 		o.UsePathStyle = true
     })
+
+	return nil
 }
 
 
