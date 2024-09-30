@@ -2,9 +2,9 @@
 
 ## Initialisation du projet
 
-Pour installer la CLI, exécutez les commande suivante dans votre inviter de commande :
+Pour installer la CLI, exécutez les commandes suivantes dans votre invite de commande :
 
-- un fois à la racine du projet
+- Une fois à la racine du projet
 
 ```shell
 go mod tidy
@@ -42,19 +42,19 @@ Cela lancera automatiquement l'image docker en local sur le port `9001`. Pensez 
 
 ## Usage du CLI
 
-### Avant Propos
+### Avant-propos
 
-Cette version du CLI comprend une authentification automatique en `HMAC-SHA256`. Par conséquent il n'est pour l'instant que compatible avec la version4 d'authentification des buckets Amazon. [Voir la documentation officielle](https://docs.aws.amazon.com/fr_fr/AmazonSimpleDB/latest/DeveloperGuide/HMACAuth.html).
+Cette version du CLI comprend une authentification automatique en `HMAC-SHA256`. Par conséquent, elle n'est pour l'instant compatible qu'avec la version 4 d'authentification des buckets Amazon. [Voir la documentation officielle](https://docs.aws.amazon.com/fr_fr/AmazonSimpleDB/latest/DeveloperGuide/HMACAuth.html).
 
-Nous prendrons comme exemple cette image docker pour rentré dans le détaille d'utilisation du CLI
+Nous prendrons comme exemple cette image Docker pour entrer dans le détail de l'utilisation du CLI.
 
 ### Flags Généraux
 
-#### Usage générale des alias
+#### Usage général des alias
 
-Vous pouvez exploiter l'application de différentes manière. L'une des première approche est de définir un alias qui sera exploité par défaut lors de vos différente commande. Afin de comprendre correctement son usage nous commencerons par cela. Toutes les commandes suivantes seront déterminés par la bonne insertion de vos alias. Assurez-vous que ces derniers soient correct est adaptés à l'usage d'un bucket S3.
+Vous pouvez exploiter l'application de différentes manières. L'une des premières approches est de définir un alias qui sera exploité par défaut lors de vos différentes commandes. Afin de comprendre correctement son usage, nous commencerons par cela. Toutes les commandes suivantes seront déterminées par la bonne insertion de vos alias. Assurez-vous que ces derniers soient corrects et adaptés à l'usage d'un bucket S3.
 
-Si vous souhaitez cependant altrernée l'usage du CLI sur plusieur bucket vous pouvez spécifier l'alias cible avec l'usage du flags `-alias`.
+Si vous souhaitez cependant alterner l'usage du CLI sur plusieurs buckets, vous pouvez spécifier l'alias cible avec l'usage du flag `-alias`.
 
 ```shell
 bucketool --alias <command> ...
@@ -62,7 +62,7 @@ bucketool --alias <command> ...
 
 #### Usage du mode Debug
 
-Vous pouvez notamment passer le programme en mod debug avec l'alias `-debug`. Ainsi, vous aurez plus d'information sur les commands appelée et le fonctionnement interne de l'application. Lors de l'usage du flag `-debug`, une fonction d'interception de requêtes HTPP vous permetra d'avoir un vision plus détaillées sur ce qu'il ce passe.
+Vous pouvez notamment passer le programme en mode debug avec l'alias `-debug`. Ainsi, vous aurez plus d'informations sur les commandes appelées et le fonctionnement interne de l'application. Lors de l'usage du flag `-debug`, une fonction d'interception de requêtes HTTP vous permettra d'avoir une vision plus détaillée de ce qu'il se passe.
 
 ```shell
 bucketool --debug <command> ...
@@ -82,23 +82,23 @@ La commande `alias` comprend à ce stade trois sous-commandes :
 - List
 - Current
 
-C'est sous commandes vous permet efficacement de gérer et stocker des accès à différent serveur S3. Ainsi, il n'est pas necessaire de rentrée constamment les différent credential pour accédès au donnée. Tout le processus d'interactivité du CLI repose sur ces alias. Il est donc important de les déclarés avant tout usage.
+Ces sous-commandes vous permettent de gérer et stocker efficacement des accès à différents serveurs S3. Ainsi, il n'est pas nécessaire de rentrer constamment les différents identifiants pour accéder aux données. Tout le processus d'interactivité du CLI repose sur ces alias. Il est donc important de les déclarer avant tout usage.
 
 #### Alias Set
 
-La command Alias set permet de créer un alias, cela facilitera par la suite la manière dont vous essayez de rentrez en contact avec votre bucket S3.
+La commande `alias set` permet de créer un alias, ce qui facilitera par la suite la manière dont vous essayez de rentrer en contact avec votre bucket S3.
 
-Cette commande prend comme première argument le nom de votre alias
+Cette commande prend comme premier argument le nom de votre alias
 
-##### Options de la commmande `alias set`
+##### Options de la commande `alias set`
 
-La sous-commande `set` comprend les Flags suivant :
+La sous-commande `set` comprend les Flags suivants :
 
-- `-port, -p` _(obligatoire)_: Définit le port de votre server S3,
+- `-port, -p` _(obligatoire)_: Définit le port de votre serveur S3,
 - `-hostname, -H` _(obligatoire)_ : Définit l'hôte auquel nous devons nous connecter
 - `-keyname, -k` _(obligatoire)_ : Définit le AWSAccessKeyId
-- `_-Secret, -s` _(obligatoire)_ : Votre clef secret qui sera ensuite signée en HMAC-SHA
-- `_-current, -c` _(Optionnel)_ : Permet de signifier directement au programme que cette alias doit être pris par défault. _Si un autre alias été jusqu'à lors utilisé, il perdra le pointeur. Voir plus en détail `alais current`_
+- `-Secret, -s` _(obligatoire)_ : Votre clé secrète qui sera ensuite signée en HMAC-SHA
+- `-current, -c` _(Optionnel)_ : Permet de signifier directement au programme que cet alias doit être pris par défaut. _Si un autre alias était utilisé jusqu'à lors, il perdra le pointeur. Voir plus en détail `alias current`_
 
 ##### Exemple d'utilisation de Alias Set
 
@@ -122,27 +122,27 @@ bucketool alias set "minio" -hostname "http://localhost/" -port 9001 -k "minioad
 # Registered Alias on Name:  minio http://localhost:9000
 ```
 
-> Une erreur peut survenir lors de l'insertion de l'Alias car un première appel est fait à l'adresse souhaité. Cet appel vous permez d'agir en conséquence si votre alias est défectueux. _Il s'agit d'un simple appel de liste de bucket avec aucun arguments de plus. Vous pouvez notamment passer en mode debug pour vous assurez que l'appel fonctionne._
+> Une erreur peut survenir lors de l'insertion de l'Alias car un premier appel est fait à l'adresse souhaitée. Cet appel vous permet d'agir en conséquence si votre alias est défectueux. _Il s'agit d'un simple appel de liste de bucket sans aucun argument supplémentaire. Vous pouvez notamment passer en mode debug pour vous assurer que l'appel fonctionne._
 
 ```shell
 bucketool alias set "this use cursor" -hostname "http://other.butNotExist/" -port 3000  -k "minioadmin" -s "minioadmin" -c
 ```
 
 Vous recevrez bien une réponse de type : `Alias has been saved and set as current`
-Suivit d'un message d'erreur : `Error while connecting to the alias`
+Suivie d'un message d'erreur : `Error while connecting to the alias`
 
-Il vous suffira pour cela de rappeller la commande `set` sur le même alias pour le mettre à jour.
+Il vous suffira pour cela de rappeler la commande `set` sur le même alias pour le mettre à jour.
 
 #### Alias List
 
-A présent nous pouvons listé les alias que nous avons créer et constater que le dernier, bien que défectueux est présent.
+À présent, nous pouvons lister les alias que nous avons créés et constater que le dernier, bien que défectueux, est présent.
 
-La command `alias list` comprend très peut de flags et sont tous optionnels :
+La commande `alias list` comprend très peu de flags et ils sont tous optionnels :
 
-- `-detail, -d`_(Optionnel)_ : Permet d'avoir des informations sur l'adresse contactée. Cette dernière ne retourne pas la clef de l'utilisateur ou la clef secret
-- `-filter, -f` _(Optionnel)_ : Vous sera utile pour facilité votre recherche.Cette dernière filtreras la liste selon les caractère clef présent. Ce filtre s'applique sur l'alias ainsi que sur l'host.
+- `-detail, -d` _(Optionnel)_ : Permet d'avoir des informations sur l'adresse contactée. Cette dernière ne retourne pas la clé de l'utilisateur ou la clé secrète.
+- `-filter, -f` _(Optionnel)_ : Vous sera utile pour faciliter votre recherche. Ce filtre filtrera la liste selon les caractères clés présents. Ce filtre s'applique sur l'alias ainsi que sur l'hôte.
 
-> Afin de facilité la gestion est la lecture des alias, l'alias actuellement selectionné sera représenté avec un curseur devant :
+> Afin de faciliter la gestion et la lecture des alias, l'alias actuellement sélectionné sera représenté avec un curseur devant :
 
 ##### Exemple d'utilisation de Alias list
 
@@ -178,10 +178,10 @@ bucketool alias ls -d
 
 #### Commande `alias current`
 
-Alias current est une command qui vous permtra deux choses :
+Alias current est une commande qui vous permettra deux choses :
 
-- Sans Flag, cette dernière commande retourne l'alias utilisé actuellement
-- Avec le flag `-switch`,`-s` suivit du nom d'un autre alias. Ce dernier changera l'adresse du curseur en conséquence.
+- Sans Flag, cette commande retourne l'alias utilisé actuellement.
+- Avec le flag `-switch`, `-s` suivi du nom d'un autre alias, cette commande changera l'adresse du curseur en conséquence.
 
 ##### Usage de la commande `alias current`
 
@@ -216,9 +216,9 @@ bucketool alias delete "myalias"
 
 ##### Options
 
-- `-a`, `--all` _(Optionel)_ : Supprime tous les alias.
-- `-sc`, `--savecurrent` _(Optionel)_: Sauvegarde l'alias actuel lorsque vous utilisez l'option `--all` ou `--clean`.
-- `-c`, `--clean` _(Optionel)_: Supprime tous les alias qui ne peuvent pas se connecter au serveur.
+- `-a`, `--all` _(Optionnel)_ : Supprime tous les alias.
+- `-sc`, `--savecurrent` _(Optionnel)_: Sauvegarde l'alias actuel lorsque vous utilisez l'option `--all` ou `--clean`.
+- `-c`, `--clean` _(Optionnel)_: Supprime tous les alias qui ne peuvent pas se connecter au serveur.
 
 ##### Exemple d'utilisation avec options
 
@@ -242,7 +242,7 @@ bucketool alias delete --clean
 
 ##### Confirmation de suppression
 
-Si l'alias actuel est sur le point d'être supprimé, une confirmation sera demandée à l'utilisateur. Cela peut se produire si le programme remarque que le flag `-sc` n'est pas utiliser lors de l'usage de `--all` ou de `--clean`.
+Si l'alias actuel est sur le point d'être supprimé, une confirmation sera demandée à l'utilisateur. Cela peut se produire si le programme remarque que le flag `-sc` n'est pas utilisé lors de l'usage de `--all` ou de `--clean`.
 
 ```text
 The current Alias same as touched by this command will be deleted, do you want to delete ? (y/n) :
@@ -260,11 +260,11 @@ WARN | The current Alias has been deleted
 
 #### Commande `bucket create`
 
-La commande `create bucket` permet de créer un nouveau bucket sur un serveur compatible S3. Cette commande vérifie d'abord si le nom du bucket est valide, puis tente de créer le bucket. Si le bucket existe déjà, un message d'erreur approprié est affiché.
+La commande `bucket create` permet de créer un nouveau bucket sur un serveur compatible S3. Cette commande vérifie d'abord si le nom du bucket est valide, puis tente de créer le bucket. Si le bucket existe déjà, un message d'erreur approprié est affiché.
 
-##### Arguments de la command `bucket create`
+##### Arguments de la commande `bucket create`
 
-- `<name>` : Le nom du bucket à créer. Cet argument est obligatoire et doit être unique. Le nom doit être en minuscules et ne contenir que des lettres minuscules, des chiffres, des tirets (-) et des points (.). L'agument doit être placé en premier.
+- `<name>` : Le nom du bucket à créer. Cet argument est obligatoire et doit être unique. Le nom doit être en minuscules et ne contenir que des lettres minuscules, des chiffres, des tirets (-) et des points (.). L'argument doit être placé en premier.
 
 1. Le nom ne doit pas être vide.
 2. Le nom doit comporter au moins 3 caractères.
@@ -298,7 +298,7 @@ bucketool -alias "myalias" bucket create "mybucket"
 
 #### Commande `bucket list`
 
-La commande `bucket ls` permet de lister tous les buckets sur un serveur compatible S3. Cette commande peut également afficher des informations détaillées sur chaque bucket si l'option `--details` est spécifiée.
+La commande `bucket list` permet de lister tous les buckets sur un serveur compatible S3. Cette commande peut également afficher des informations détaillées sur chaque bucket si l'option `--details` est spécifiée.
 
 ##### Options de la commande bucket list
 
